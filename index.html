@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inkera Stays – Rwanda's Finest Hotels</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --deep: #0D1B1E;
+    --forest: #1A3A2A;
+    --cream: #F5F0E8;
+    --warm-white: #FDFAF4;
+    --muted: #7A8C84;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--deep);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(13,27,30,0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.4s;
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+  .nav-logo span { font-style: italic; color: var(--cream); }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: all 0.3s;
+  }
+  .nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--gold); }
+
+  /* PAGE SYSTEM */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ---- HOME PAGE ---- */
+  .hero {
+    position: relative; height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(26,58,42,0.6) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(201,168,76,0.12) 0%, transparent 50%),
+      linear-gradient(160deg, #0D1B1E 0%, #122820 40%, #0D1B1E 100%);
+  }
+
+  /* Animated terrain lines */
+  .terrain {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 40%; overflow: hidden;
+  }
+  .terrain svg { width: 100%; height: 100%; }
+
+  .hero-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-top: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; margin-top: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+
+  .btn-primary {
+    padding: 0.85rem 2.4rem;
+    background: var(--gold);
+    color: var(--deep);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: none; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .btn-outline {
+    padding: 0.85rem 2.4rem;
+    background: transparent;
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Scroll indicator */
+  .scroll-ind {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0; animation: fadeUp 1s 1.2s forwards;
+  }
+  .scroll-ind span { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+  .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 1.8s infinite; }
+
+  /* STATS STRIP */
+  .stats-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(201,168,76,0.04);
+  }
+  .stat-item {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; }
+
+  /* FEATURED REGIONS */
+  .section { padding: 6rem 4rem; }
+  .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3.5rem; }
+  .section-tag { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem; }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  .regions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; }
+
+  .region-card {
+    position: relative; aspect-ratio: 3/4; overflow: hidden; cursor: pointer;
+  }
+  .region-card:first-child { grid-row: span 2; aspect-ratio: auto; }
+
+  .region-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    background-size: cover;
+    background-position: center;
+  }
+  .region-card:hover .region-bg { transform: scale(1.06); }
+
+  .r-kigali { background: linear-gradient(160deg, #1a2e3a, #0d1b1e); }
+  .r-west { background: linear-gradient(160deg, #0f2a1e, #1a3a2a); }
+  .r-north { background: linear-gradient(160deg, #1a2030, #0d1525); }
+  .r-east { background: linear-gradient(160deg, #2a2010, #1a1505); }
+  .r-south { background: linear-gradient(160deg, #1a300a, #0f2005); }
+
+  /* Decorative pattern overlay */
+  .region-pattern {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.15) 0%, transparent 70%);
+  }
+
+  .region-content {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(13,27,30,0.92) 0%, transparent 50%);
+  }
+
+  .region-badge {
+    display: inline-block;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    background: var(--gold); color: var(--deep); padding: 0.25rem 0.7rem;
+    font-weight: 600; margin-bottom: 0.7rem; width: fit-content;
+  }
+  .region-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 400;
+    line-height: 1.1; margin-bottom: 0.5rem;
+  }
+  .region-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+  .region-count { font-size: 0.68rem; letter-spacing: 0.15em; color: var(--gold); margin-top: 0.8rem; }
+
+  /* EXPERIENCE SECTION */
+  .experience-wrap {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+    padding: 5rem 4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .exp-text .section-tag { display: block; margin-bottom: 0.5rem; }
+
+  .exp-features { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .exp-feature { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .exp-icon {
+    width: 36px; height: 36px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0; color: var(--gold);
+  }
+  .exp-feature-text h4 { font-size: 0.85rem; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+  .exp-feature-text p { font-size: 0.78rem; color: var(--muted); line-height: 1.65; }
+
+  .exp-visual {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+  .exp-img {
+    border-radius: 0; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .exp-img:nth-child(2) { margin-top: 2rem; }
+  .exp-img-inner {
+    height: 220px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+  }
+  .bg1 { background: linear-gradient(135deg, #0f2a1e, #1a3a2a); }
+  .bg2 { background: linear-gradient(135deg, #1a2030, #0d1525); }
+  .bg3 { background: linear-gradient(135deg, #2a2010, #1a1505); }
+  .bg4 { background: linear-gradient(135deg, #1a300a, #0f2005); }
+
+  /* TESTIMONIAL */
+  .testimonial-section {
+    padding: 5rem 4rem;
+    text-align: center;
+    background: rgba(201,168,76,0.04);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .testimonial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 300;
+    font-style: italic;
+    max-width: 700px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.5;
+  }
+  .testimonial-author { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+
+  /* ---- HOTELS PAGE ---- */
+  .hotels-hero {
+    height: 40vh; display: flex; align-items: flex-end;
+    padding: 4rem;
+    background: linear-gradient(160deg, #122820 0%, #0D1B1E 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hotels-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+  }
+  .hotels-hero h1 em { font-style: italic; color: var(--gold); }
+
+  .hotels-content { padding: 4rem; }
+
+  .region-section { margin-bottom: 5rem; }
+
+  .region-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .region-icon-lg { font-size: 2rem; }
+  .region-header-text .region-tag {
+    font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .region-header-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 400;
+  }
+  .region-header-text p { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .hotels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  .hotel-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.35s;
+    cursor: pointer;
+  }
+  .hotel-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .hotel-card-img {
+    height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    position: relative; overflow: hidden;
+  }
+  .hotel-card-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,27,30,0.5), transparent);
+  }
+
+  .hotel-card-body { padding: 1.4rem; }
+  .hotel-star {
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.4rem;
+  }
+  .hotel-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; font-weight: 400; margin-bottom: 0.4rem;
+  }
+  .hotel-location { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.8rem; }
+  .hotel-desc { font-size: 0.78rem; color: rgba(245,240,232,0.65); line-height: 1.6; }
+  .hotel-rating {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .hotel-rating .stars { color: var(--gold); font-size: 0.7rem; }
+  .hotel-rating .score { font-size: 0.78rem; font-weight: 500; }
+  .hotel-rating .label { font-size: 0.7rem; color: var(--muted); }
+
+  /* ---- CONTACT PAGE ---- */
+  .contact-hero {
+    height: 38vh; display: flex; align-items: flex-end;
+    padding: 4rem;
+    background: linear-gradient(160deg, #0f2a1e 0%, #0D1B1E 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+  }
+  .contact-hero h1 em { font-style: italic; color: var(--gold); }
+
+  .contact-content {
+    display: grid; grid-template-columns: 1fr 1.2fr;
+    gap: 0; min-height: 60vh;
+  }
+
+  .contact-info {
+    padding: 4rem;
+    border-right: 1px solid var(--border);
+    background: rgba(201,168,76,0.02);
+  }
+  .contact-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 300; margin-bottom: 0.8rem;
+  }
+  .contact-info > p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-bottom: 2.5rem; }
+
+  .contact-detail { display: flex; gap: 1rem; margin-bottom: 1.8rem; align-items: flex-start; }
+  .contact-detail-icon {
+    width: 40px; height: 40px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0; color: var(--gold);
+  }
+  .contact-detail-text h4 { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.3rem; }
+  .contact-detail-text p { font-size: 0.83rem; color: var(--cream); }
+
+  .contact-form-wrap { padding: 4rem; }
+  .contact-form-wrap h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 300; margin-bottom: 2rem;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
+  .form-group label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    resize: none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-group select option { background: var(--deep); }
+
+  /* FOOTER */
+  footer {
+    padding: 3rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(201,168,76,0.02);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 300; color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+  .footer-logo span { font-style: italic; color: var(--cream); }
+  .footer-copy { font-size: 0.72rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex; gap: 0.8rem; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .filter-btn {
+    padding: 0.55rem 1.3rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.07);
+  }
+
+  /* Notice for contact form */
+  .form-notice {
+    display: none; margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--gold);
+    background: rgba(201,168,76,0.08);
+    font-size: 0.8rem; color: var(--gold-light);
+  }
+
+  /* Luxury tag */
+  .luxury-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .section, .hotels-content { padding: 3rem 1.5rem; }
+    .stats-strip { grid-template-columns: 2fr 2fr; }
+    .regions-grid { grid-template-columns: 1fr 1fr; }
+    .region-card:first-child { grid-row: auto; }
+    .experience-wrap { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.5rem; }
+    .contact-content { grid-template-columns: 1fr; }
+    .contact-info { border-right: none; border-bottom: 1px solid var(--border); }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .hotels-hero, .contact-hero { padding: 3rem 1.5rem; }
+    .filter-bar { gap: 0.5rem; }
+    .testimonial-section { padding: 3rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Inkera <span>Stays</span></div>
+  <ul class="nav-links">
+    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+    <li><a href="#" class="nav-link" data-page="hotels">All Hotels</a></li>
+    <li><a href="#" class="nav-link" data-page="contact">Contact Us</a></li>
+  </ul>
+</nav>
+
+<!-- ======== HOME PAGE ======== -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="terrain">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+        <path d="M0,150 C240,80 360,180 540,110 C720,40 900,160 1080,90 C1260,20 1380,140 1440,100 L1440,200 L0,200 Z" fill="rgba(26,58,42,0.35)"/>
+        <path d="M0,170 C180,120 360,190 600,130 C840,70 1020,180 1260,120 C1380,90 1440,155 1440,155 L1440,200 L0,200 Z" fill="rgba(13,27,30,0.5)"/>
+      </svg>
+    </div>
+    <div style="position:relative; z-index:2;">
+      <div class="hero-tag">Rwanda's Premier Hotel Directory</div>
+      <h1 class="hero-title">Discover <em>Rwanda's</em><br>Finest Stays</h1>
+      <p class="hero-sub">From lakeside retreats on Kivu to luxury lodges in Volcanoes — every extraordinary hotel, curated for you.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="showPage('hotels')">Explore All Hotels</button>
+        <button class="btn-outline" onclick="showPage('contact')">Contact Us</button>
+      </div>
+    </div>
+    <div class="scroll-ind">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-num">16+</div>
+      <div class="stat-label">Curated Hotels</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Regions Covered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Rwanda Local</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5★</div>
+      <div class="stat-label">Luxury Options</div>
+    </div>
+  </div>
+
+  <!-- Featured Regions -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-tag">Where to Stay</div>
+        <div class="section-title">Explore by<br><em style="font-style:italic; font-family:'Cormorant Garamond',serif;">Region</em></div>
+      </div>
+      <button class="btn-outline" onclick="showPage('hotels')">View All Hotels →</button>
+    </div>
+    <div class="regions-grid">
+        <div class="region-card" onclick="showPage('hotels')">
+        <div class="region-bg r-kigali" style="background: url('kigali2.jpg') center/cover no-repeat;"></div>
+        <div class="region-pattern"></div>
+        <div class="region-content">
+          <div class="region-badge">Capital</div>
+          <div class="region-name">Kigali City</div>
+          <div class="region-desc">International luxury meets vibrant African culture in Rwanda's thriving capital city.</div>
+          <div class="region-count">4 Hotels Available →</div>
+        </div>
+      </div>
+      <div class="region-card" onclick="showPage('hotels')">
+        <div class="region-bg r-west" style="background: url('western.jpg') center/cover no-repeat;"></div>
+        <div class="region-pattern"></div>
+        <div class="region-content">
+          <div class="region-badge">Lakeside</div>
+          <div class="region-name">Western Province</div>
+          <div class="region-desc">Stunning Lake Kivu vistas and serene waterfront resorts await.</div>
+          <div class="region-count">4 Hotels Available →</div>
+        </div>
+      </div>
+      <div class="region-card" onclick="showPage('hotels')">
+        <div class="region-bg r-north" style="background: url('northern.jpg') center/cover no-repeat;"></div>
+        <div class="region-pattern"></div>
+        <div class="region-content">
+          <div class="region-badge">Gorilla Country</div>
+          <div class="region-name">Northern Province</div>
+          <div class="region-desc">Gateway to Volcanoes National Park and the legendary mountain gorillas.</div>
+          <div class="region-count">4 Hotels Available →</div>
+        </div>
+      </div>
+      <div class="region-card" onclick="showPage('hotels')">
+        <div class="region-bg r-east" style="background: url('Eastern.jpg') center/cover no-repeat;"></div>
+        <div class="region-pattern"></div>
+        <div class="region-content">
+          <div class="region-badge">Safari</div>
+          <div class="region-name">Eastern Province</div>
+          <div class="region-desc">The raw beauty of Akagera savannah and wildlife-rich landscapes.</div>
+          <div class="region-count">3 Hotels Available →</div>
+        </div>
+      </div>
+      <div class="region-card" onclick="showPage('hotels')">
+        <div class="region-bg r-south" style="background: url('Southern.jpg') center/cover no-repeat;"></div>
+        <div class="region-pattern"></div>
+        <div class="region-content">
+          <div class="region-badge">Forest & Culture</div>
+          <div class="region-name">Southern Province</div>
+          <div class="region-desc">Ancient rainforest and rich Rwandan heritage in the country's south.</div>
+          <div class="region-count">3 Hotels Available →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experience -->
+  <div class="experience-wrap">
+    <div class="exp-text">
+      <span class="section-tag">Why Inkera Stays</span>
+      <div class="section-title" style="font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,3.5vw,3rem); font-weight:300; line-height:1.15;">
+        Your Guide to<br><em style="font-style:italic; color:var(--gold)">Exceptional</em><br>Rwandan Stays
+      </div>
+      <div class="exp-features">
+        <div class="exp-feature">
+          <div class="exp-icon">🦍</div>
+          <div class="exp-feature-text">
+            <h4>Gorilla Trekking Proximity</h4>
+            <p>We feature the best lodges near Volcanoes National Park, putting you steps from the mountain gorillas.</p>
+          </div>
+        </div>
+        <div class="exp-feature">
+          <div class="exp-icon">🌊</div>
+          <div class="exp-feature-text">
+            <h4>Lake Kivu Retreats</h4>
+            <p>Handpicked lakeside resorts where tranquil waters meet world-class hospitality.</p>
+          </div>
+        </div>
+        <div class="exp-feature">
+          <div class="exp-icon">✦</div>
+          <div class="exp-feature-text">
+            <h4>Verified Luxury Standards</h4>
+            <p>Every property on Inkera Stays is selected for quality, service excellence and authentic Rwandan character.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="exp-visual">
+      <div class="exp-img"><div class="exp-img-inner bg1" style="background: url('water fall.jpg') center/cover no-repeat;"></div></div>
+      <div class="exp-img"><div class="exp-img-inner bg2" style="background: url('gorilla.jpg') center/cover no-repeat;"></div></div>
+      <div class="exp-img"><div class="exp-img-inner bg3" style="background: url('lake kivu.jpg') center/cover no-repeat;"></div></div>
+      <div class="exp-img"><div class="exp-img-inner bg4" style="background: url('sunset.jpg') center/cover no-repeat;"></div></div>
+    </div>
+  </div>
+
+  <!-- Testimonial -->
+  <div class="testimonial-section">
+    <div class="section-tag" style="margin-bottom:1.5rem;">Guest Experience</div>
+    <p class="testimonial-quote">"Rwanda is unlike anywhere else in Africa — and Inkera Stays led us to places we never would have discovered on our own. Absolutely breathtaking."</p>
+    <div class="testimonial-author">— Sarah M., Traveller from London</div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">Inkera <span>Stays</span></div>
+    <div class="footer-copy">© 2025 Inkera Stays · Rwanda's Hotel Directory</div>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('hotels')">Hotels</a>
+      <a href="#" onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+
+</div>
+
+
+<!-- ======== HOTELS PAGE ======== -->
+<div id="page-hotels" class="page">
+
+  <div class="hotels-hero" style="padding-top:7rem;">
+    <div>
+      <div style="font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;">16+ Curated Properties</div>
+      <h1>All <em>Hotels</em> in Rwanda</h1>
+    </div>
+  </div>
+
+  <div class="hotels-content">
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterHotels('all', this)">All Regions</button>
+      <button class="filter-btn" onclick="filterHotels('western', this)">🌊 Western</button>
+      <button class="filter-btn" onclick="filterHotels('kigali', this)">🏙️ Kigali</button>
+      <button class="filter-btn" onclick="filterHotels('northern', this)">🦍 Northern</button>
+      <button class="filter-btn" onclick="filterHotels('eastern', this)">🐘 Eastern</button>
+      <button class="filter-btn" onclick="filterHotels('southern', this)">🌿 Southern</button>
+    </div>
+
+    <!-- WESTERN PROVINCE -->
+    <div class="region-section" data-region="western">
+      <div class="region-header">
+        <div class="region-icon-lg">🌊</div>
+        <div class="region-header-text">
+          <div class="region-tag">Western Province</div>
+          <h2>Lake Kivu & Karongi / Rubavu</h2>
+          <p>This region is famous for its lakeside resorts and beautiful views.</p>
+        </div>
+      </div>
+      <div class="hotels-grid">
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('cleo.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐ Luxury · Lakeside</div>
+            <div class="hotel-name">Cleo Lake Kivu Hotel <span class="luxury-tag">Top Rated</span></div>
+            <div class="hotel-location">📍 Karongi (Kibuye), Western Province</div>
+            <div class="hotel-desc">A luxury experience on the shores of Lake Kivu. Known for stunning panoramic lake views and refined hospitality.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.6/5</span>
+              <span class="label">Exceptional</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('Kivu paradis resort.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐ Resort · Waterfront</div>
+            <div class="hotel-name">Kivu Paradis Resort</div>
+            <div class="hotel-location">📍 Gisenyi (Rubavu), Western Province</div>
+            <div class="hotel-desc">A peaceful atmosphere right on the water in Gisenyi. The perfect escape for those seeking tranquillity beside Lake Kivu.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.3/5</span>
+              <span class="label">Excellent</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('Rwiza.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐ Cultural · Boutique</div>
+            <div class="hotel-name">Rwiza Village</div>
+            <div class="hotel-location">📍 Karongi, Western Province</div>
+            <div class="hotel-desc">A popular, culturally-themed stay in Karongi that celebrates Rwandan heritage through its design and warm hospitality.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.4/5</span>
+              <span class="label">Excellent</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('paradise malahide.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐ Eco Resort</div>
+            <div class="hotel-name">Paradis Malahide</div>
+            <div class="hotel-location">📍 Gisenyi (Rubavu), Western Province</div>
+            <div class="hotel-desc">A well-known 3-star eco-resort offering a sustainable lakeside retreat with easy access to Gisenyi's beach and town.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★☆☆</span>
+              <span class="score">3.8/5</span>
+              <span class="label">Good</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KIGALI -->
+    <div class="region-section" data-region="kigali">
+      <div class="region-header">
+        <div class="region-icon-lg">🏙️</div>
+        <div class="region-header-text">
+          <div class="region-tag">Capital City</div>
+          <h2>Kigali City</h2>
+          <p>As the hub of the country, Kigali contains the highest concentration of high-end international and local hotels.</p>
+        </div>
+      </div>
+      <div class="hotels-grid">
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('raddison blu and convention centre.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ International</div>
+            <div class="hotel-name">Radisson Blu Hotel & Convention Centre <span class="luxury-tag">Iconic</span></div>
+            <div class="hotel-location">📍 City Centre, Kigali</div>
+            <div class="hotel-desc">Located near the city center and iconic for its vibrant, colorful architecture. A premier convention and business destination.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.7/5</span>
+              <span class="label">Exceptional</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('kigali serena hotel.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ Luxury</div>
+            <div class="hotel-name">Kigali Serena Hotel</div>
+            <div class="hotel-location">📍 Central Kigali</div>
+            <div class="hotel-desc">A top-tier luxury hotel popular among business and diplomatic travelers. Renowned for impeccable service and elegant surroundings.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.6/5</span>
+              <span class="label">Exceptional</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('hotel-des-mille-collines.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐ Historic</div>
+            <div class="hotel-name">Hôtel des Mille Collines <span class="luxury-tag">Historic</span></div>
+            <div class="hotel-location">📍 Heart of Kigali</div>
+            <div class="hotel-desc">A historic hotel known for its significant role during the events of 1994, now a symbol of resilience and Rwanda's remarkable recovery.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.2/5</span>
+              <span class="label">Excellent</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('kigali marriot.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ Modern Luxury</div>
+            <div class="hotel-name">Marriott Kigali</div>
+            <div class="hotel-location">📍 Financial District, Kigali</div>
+            <div class="hotel-desc">A modern 5-star hotel near the financial district. Contemporary design, world-class amenities and the Marriott brand's renowned hospitality.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.8/5</span>
+              <span class="label">Outstanding</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NORTHERN -->
+    <div class="region-section" data-region="northern">
+      <div class="region-header">
+        <div class="region-icon-lg">🦍</div>
+        <div class="region-header-text">
+          <div class="region-tag">Northern Province</div>
+          <h2>Musanze / Volcanoes National Park</h2>
+          <p>This is the base for gorilla trekking and mountain adventures.</p>
+        </div>
+      </div>
+      <div class="hotels-grid">
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('bisate.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ Ultra Luxury</div>
+            <div class="hotel-name">Bisate Lodge <span class="luxury-tag">Exclusive</span></div>
+            <div class="hotel-location">📍 Near Volcanoes National Park</div>
+            <div class="hotel-desc">High-end luxury villas perched in the forest near the park. An immersive conservation experience with extraordinary gorilla access.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.9/5</span>
+              <span class="label">Outstanding</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('one and only.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ Ultra Luxury</div>
+            <div class="hotel-name">One&Only Gorilla's Nest <span class="luxury-tag">World-Class</span></div>
+            <div class="hotel-location">📍 Eucalyptus Forest, Musanze</div>
+            <div class="hotel-desc">An ultra-luxury resort nestled in a magical eucalyptus forest. Unmatched seclusion and proximity to the mountain gorillas.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.9/5</span>
+              <span class="label">Outstanding</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('classic resort.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐ Accessible</div>
+            <div class="hotel-name">Classic Resort Lodge</div>
+            <div class="hotel-location">📍 Musanze Town</div>
+            <div class="hotel-desc">A more accessible, comfortable option located in Musanze town — ideal for gorilla trekking without the ultra-luxury price tag.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★☆☆</span>
+              <span class="score">3.9/5</span>
+              <span class="label">Good</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('five volcanoes.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐ Boutique</div>
+            <div class="hotel-name">Five Volcanoes Boutique Hotel</div>
+            <div class="hotel-location">📍 Musanze, Northern Province</div>
+            <div class="hotel-desc">A highly-rated boutique option in Musanze offering personalised service and beautiful views of the Virunga volcanoes.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.5/5</span>
+              <span class="label">Excellent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EASTERN -->
+    <div class="region-section" data-region="eastern">
+      <div class="region-header">
+        <div class="region-icon-lg">🐘</div>
+        <div class="region-header-text">
+          <div class="region-tag">Eastern Province</div>
+          <h2>Akagera / Kayonza</h2>
+          <p>Mainly known for Akagera National Park and the border areas.</p>
+        </div>
+      </div>
+      <div class="hotels-grid">
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('akagera game lodge.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐ Safari Lodge</div>
+            <div class="hotel-name">Akagera Game Lodge <span class="luxury-tag">Park Side</span></div>
+            <div class="hotel-location">📍 Inside Akagera National Park</div>
+            <div class="hotel-desc">The primary hotel located inside Akagera National Park, overlooking the stunning Lake Ihema with direct game-viewing access.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.3/5</span>
+              <span class="label">Excellent</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('magashi camp.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ Luxury Camp</div>
+            <div class="hotel-name">Magashi Camp <span class="luxury-tag">Exclusive</span></div>
+            <div class="hotel-location">📍 Northern Akagera</div>
+            <div class="hotel-desc">A luxury safari camp in the northern part of Akagera, offering an intimate, exclusive experience deep in the park.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.8/5</span>
+              <span class="label">Outstanding</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('mantis akagera game lodge.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐ Safari</div>
+            <div class="hotel-name">Mantis Akagera Game Lodge</div>
+            <div class="hotel-location">📍 Akagera National Park</div>
+            <div class="hotel-desc">Refined accommodation with sweeping views of the savannah. The Mantis collection's signature style meets African wilderness.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.4/5</span>
+              <span class="label">Excellent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOUTHERN -->
+    <div class="region-section" data-region="southern">
+      <div class="region-header">
+        <div class="region-icon-lg">🌿</div>
+        <div class="region-header-text">
+          <div class="region-tag">Southern Province</div>
+          <h2>Huye / Nyanza / Nyungwe</h2>
+          <p>Known for cultural history and Nyungwe Forest.</p>
+        </div>
+      </div>
+      <div class="hotels-grid">
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('one and only nyungwe .jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐⭐⭐ Ultra Luxury</div>
+            <div class="hotel-name">One&Only Nyungwe House <span class="luxury-tag">World-Class</span></div>
+            <div class="hotel-location">📍 Tea Plantation, Nyungwe</div>
+            <div class="hotel-desc">A world-class luxury resort set on a breathtaking tea plantation at the edge of Nyungwe rainforest. Simply unforgettable.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★★★</span>
+              <span class="score">4.9/5</span>
+              <span class="label">Outstanding</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('barthos.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐ Reliable</div>
+            <div class="hotel-name">The Barthos Hotel</div>
+            <div class="hotel-location">📍 Huye (Butare), Southern Province</div>
+            <div class="hotel-desc">A reliable and comfortable option located in Huye — the intellectual capital of Rwanda — near the National University.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★☆☆</span>
+              <span class="score">3.7/5</span>
+              <span class="label">Good</span>
+            </div>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <div class="hotel-card-img" style="background: linear-gradient(rgba(13,27,30,0.28), rgba(13,27,30,0.28)), url('nyungwe top view hill hotel.jpg') center/cover no-repeat;"></div>
+          <div class="hotel-card-body">
+            <div class="hotel-star">⭐⭐⭐ Scenic</div>
+            <div class="hotel-name">Nyungwe Top View Hill Hotel</div>
+            <div class="hotel-location">📍 Nyungwe Forest Area</div>
+            <div class="hotel-desc">Offers stunning panoramic views of the ancient rainforest and surrounding rolling hills. A scenic choice for nature lovers.</div>
+            <div class="hotel-rating">
+              <span class="stars">★★★☆☆</span>
+              <span class="score">3.8/5</span>
+              <span class="label">Good</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-logo">Inkera <span>Stays</span></div>
+    <div class="footer-copy">© 2025 Inkera Stays · Rwanda's Hotel Directory</div>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('hotels')">Hotels</a>
+      <a href="#" onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ======== CONTACT PAGE ======== -->
+<div id="page-contact" class="page">
+
+  <div class="contact-hero" style="padding-top:7rem;">
+    <div>
+      <div style="font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;">We'd love to hear from you</div>
+      <h1>Get in <em>Touch</em></h1>
+    </div>
+  </div>
+
+  <div class="contact-content">
+    <div class="contact-info">
+      <h2>Let's Plan Your Rwanda Journey</h2>
+      <p>Whether you're looking for gorilla trekking lodges, lakeside retreats, or the perfect Kigali city hotel — our team is here to guide you to the ideal stay.</p>
+
+      <div class="contact-detail">
+        <div class="contact-detail-icon">📍</div>
+        <div class="contact-detail-text">
+          <h4>Our Location</h4>
+          <p>KG 9 Avenue, Kigali City Centre<br>Kigali, Rwanda</p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-detail-icon">📞</div>
+        <div class="contact-detail-text">
+          <h4>Phone</h4>
+          <p>+250 788 123 456</p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-detail-icon">✉️</div>
+        <div class="contact-detail-text">
+          <h4>Email</h4>
+          <p>hello@inkerastays.rw</p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-detail-icon">🕐</div>
+        <div class="contact-detail-text">
+          <h4>Working Hours</h4>
+          <p>Monday – Friday: 8:00am – 6:00pm<br>Saturday: 9:00am – 2:00pm</p>
+        </div>
+      </div>
+
+      <div style="margin-top:2.5rem; padding:1.5rem; border:1px solid var(--border); background:rgba(201,168,76,0.04);">
+        <div style="font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:0.7rem;">Rwanda Tourism Board</div>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.65;">All hotels listed on Inkera Stays are registered and verified with the Rwanda Development Board (RDB) Tourism Division.</p>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap">
+      <h2>Send Us a Message</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Jean Claude">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Nkurunziza">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+250 7XX XXX XXX">
+      </div>
+      <div class="form-group">
+        <label>Interested Region</label>
+        <select>
+          <option value="">Select a region...</option>
+          <option>Kigali City</option>
+          <option>Western Province (Lake Kivu)</option>
+          <option>Northern Province (Musanze / Volcanoes)</option>
+          <option>Eastern Province (Akagera)</option>
+          <option>Southern Province (Nyungwe)</option>
+          <option>Not sure — need guidance</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Message</label>
+        <textarea rows="5" placeholder="Tell us about your travel plans, preferred dates, group size, or any questions..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="submitForm()" style="width:100%;margin-top:0.5rem;">Send Message →</button>
+      <div class="form-notice" id="form-notice">✓ Thank you! We'll get back to you within 24 hours.</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Inkera <span>Stays</span></div>
+    <div class="footer-copy">© 2025 Inkera Stays · Rwanda's Hotel Directory</div>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('hotels')">Hotels</a>
+      <a href="#" onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Page navigation
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelector(`.nav-link[data-page="${page}"]`).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      showPage(this.dataset.page);
+    });
+  });
+
+  // Hotel filter
+  function filterHotels(region, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.region-section').forEach(sec => {
+      if (region === 'all' || sec.dataset.region === region) {
+        sec.style.display = 'block';
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+  }
+
+  // Form submit
+  function submitForm() {
+    const notice = document.getElementById('form-notice');
+    notice.style.display = 'block';
+    setTimeout(() => { notice.style.display = 'none'; }, 5000);
+  }
+</script>
+
+</body>
+</html>
